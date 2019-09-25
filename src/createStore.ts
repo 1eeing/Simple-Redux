@@ -7,6 +7,7 @@ const createStore = (reducers) => {
     const dispatch = actions => {
         state = reducers(state, actions);
         listeners.forEach(fn => fn());
+        return actions
     };
 
     const subScribe = (fn) => {

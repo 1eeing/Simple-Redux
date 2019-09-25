@@ -3,10 +3,10 @@ const combineReducers = (reducers) => (state, action) => {
     let hasChanged = false;
 
     for (let key in reducers) {
-        const nextState = state[key];
-        const nextReducer = reducers[key](nextState, action);
-        finalState[key] = nextReducer;
-        hasChanged = hasChanged || nextReducer !== nextState;
+        const prevState = state[key];
+        const nextState = reducers[key](prevState, action);
+        finalState[key] = nextState;
+        hasChanged = hasChanged || prevState !== nextState;
     }
 
     return hasChanged ? finalState : state;
