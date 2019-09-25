@@ -1,17 +1,28 @@
-const reducers = (state, action) => {
-    switch (action.type) {
-        case 'init':
-            return { ...state };
-        default:
-            return state;
-    }
-}
-
 const createStore = (reducers) => {
-    const getState = () => reducers;
+    let state;
+    let listeners = [];
 
-    const dispatch = () => {
+    const getState = () => state;
 
+    const dispatch = actions => {
+        state = reducers(state, actions);
+        listeners.forEach(fn => fn());
+    };
+
+    const subScribe = (fn) => {
+        listeners.push(fn);
+        const unSubScribe = () => {
+            listeners.filter(ln => ln !== fn);
+        }
+        return unSubScribe;
+    }
+
+    dispatch({ type: 'init' });
+
+    return {
+        getState,
+        dispatch,
+        subScribe,
     }
 }
 
