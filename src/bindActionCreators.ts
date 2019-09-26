@@ -3,6 +3,9 @@ const bindActionCreator = (actionCreator, dispatch) => (...args) => {
 }
 
 const bindActionCreators = (actionCreators, dispatch) => {
+    if (typeof actionCreators === 'function') {
+        return bindActionCreator(actionCreators, dispatch);
+    }
     let boundActionCreators = {};
     for(let key in actionCreators){
         const actionCreator = actionCreators[key];

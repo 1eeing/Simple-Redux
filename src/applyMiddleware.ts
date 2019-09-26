@@ -1,7 +1,7 @@
-const applyMiddleware = (...middlewares) => (createStore) => (...args) => {
+const applyMiddleware = (...middlewares) => createStore => (...args) => {
     const store = createStore(...args);
-    const middles = middlewares.map(middleware => middleware(store));
-    const dispatch = middles.reduceRight((prev, cur) => prev(cur), store.dispatch);
+    const chains = middlewares.map(middleware => middleware(store));
+    const dispatch = chains.reduceRight((prev, cur) => cur(prev), store.dispatch);
     return {
         ...store,
         dispatch
