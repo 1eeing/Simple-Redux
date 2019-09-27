@@ -4,9 +4,11 @@ const createStore = (reducers) => {
 
     const getState = () => state;
 
+    const getObserverStore = () => observerStore;
+
     const dispatch = actions => {
         state = reducers(state, actions);
-        listeners.forEach(fn => fn());
+        triggerSubscribe();
         return actions
     };
 
@@ -18,12 +20,33 @@ const createStore = (reducers) => {
         return unSubScribe;
     }
 
+    const triggerSubscribe = () => {
+        listeners.forEach(fn => fn());
+    }
+
+    const createObserver = (obj) => {
+        return new Proxy(obj, {
+            get(target, key) {
+                return target[key];
+            },
+            set(target, key, value) {
+                target[key] = value;
+                triggerSubscribe();
+                return false;
+            }
+        });
+    }
+    
+    const emptyObj = Object.create(null);
+    const observerStore = createObserver(emptyObj);
+
     dispatch({ type: 'init' });
 
     return {
         getState,
         dispatch,
         subScribe,
+        getObserverStore,
     }
 }
 
